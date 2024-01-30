@@ -1,0 +1,720 @@
+read 0: get value 0
+read 8: get value 0
+write 2: increment value to 1
+write 4: increment value to 2
+read 3: get value 2
+read 9: get value 2
+write 9: increment value to 3
+read 4: get value 3
+read 6: get value 3
+read 7: get value 3
+write 0: increment value to 4
+read 1: get value 4
+write 1: increment value to 5
+read 5: get value 5
+write 3: increment value to 6
+read 2: get value 6
+write 5: increment value to 7
+write 6: increment value to 8
+write 7: increment value to 9
+write 8: increment value to 10
+read 8: get value 10
+read 0: get value 10
+write 9: increment value to 11
+read 4: get value 11
+read 3: get value 11
+read 9: get value 11
+read 7: get value 11
+write 0: increment value to 12
+read 1: get value 12
+write 4: increment value to 13
+write 2: increment value to 14
+read 2: get value 14
+read 6: get value 14
+read 5: get value 14
+write 8: increment value to 15
+write 1: increment value to 16
+write 3: increment value to 17
+write 5: increment value to 18
+write 6: increment value to 19
+write 7: increment value to 20
+write 9: increment value to 21
+read 0: get value 21
+read 8: get value 21
+read 4: get value 21
+write 0: increment value to 22
+read 3: get value 22
+read 7: get value 22
+read 9: get value 22
+write 4: increment value to 23
+read 1: get value 23
+write 2: increment value to 24
+read 2: get value 24
+read 6: get value 24
+read 5: get value 24
+write 8: increment value to 25
+write 1: increment value to 26
+write 5: increment value to 27
+write 3: increment value to 28
+write 6: increment value to 29
+write 7: increment value to 30
+write 9: increment value to 31
+read 0: get value 31
+read 8: get value 31
+read 4: get value 31
+write 0: increment value to 32
+read 3: get value 32
+read 7: get value 32
+write 4: increment value to 33
+read 9: get value 33
+read 1: get value 33
+write 2: increment value to 34
+read 2: get value 34
+read 6: get value 34
+read 5: get value 34
+write 8: increment value to 35
+write 1: increment value to 36
+write 5: increment value to 37
+write 3: increment value to 38
+write 6: increment value to 39
+write 7: increment value to 40
+write 9: increment value to 41
+read 8: get value 41
+read 4: get value 41
+read 3: get value 41
+read 7: get value 41
+read 1: get value 41
+write 4: increment value to 42
+write 0: increment value to 43
+read 6: get value 43
+write 8: increment value to 44
+write 1: increment value to 45
+write 2: increment value to 46
+read 0: get value 46
+read 5: get value 46
+read 9: get value 46
+read 2: get value 46
+write 5: increment value to 47
+write 3: increment value to 48
+write 6: increment value to 49
+write 7: increment value to 50
+write 9: increment value to 51
+read 8: get value 51
+read 4: get value 51
+read 3: get value 51
+read 7: get value 51
+read 1: get value 51
+write 4: increment value to 52
+write 0: increment value to 53
+read 6: get value 53
+write 8: increment value to 54
+write 2: increment value to 55
+write 1: increment value to 56
+read 0: get value 56
+read 5: get value 56
+read 9: get value 56
+read 2: get value 56
+write 5: increment value to 57
+write 3: increment value to 58
+write 6: increment value to 59
+write 7: increment value to 60
+write 9: increment value to 61
+read 8: get value 61
+read 4: get value 61
+read 3: get value 61
+read 1: get value 61
+read 7: get value 61
+write 4: increment value to 62
+read 6: get value 62
+write 2: increment value to 63
+write 0: increment value to 64
+write 1: increment value to 65
+write 8: increment value to 66
+write 3: increment value to 67
+read 0: get value 67
+read 9: get value 67
+write 7: increment value to 68
+read 2: get value 68
+read 5: get value 68
+write 6: increment value to 69
+write 5: increment value to 70
+write 9: increment value to 71
+read 8: get value 71
+read 4: get value 71
+read 1: get value 71
+read 3: get value 71
+read 7: get value 71
+write 4: increment value to 72
+read 6: get value 72
+write 2: increment value to 73
+write 0: increment value to 74
+write 1: increment value to 75
+write 3: increment value to 76
+write 8: increment value to 77
+read 9: get value 77
+read 0: get value 77
+write 7: increment value to 78
+read 2: get value 78
+read 5: get value 78
+write 6: increment value to 79
+write 5: increment value to 80
+write 9: increment value to 81
+read 8: get value 81
+read 3: get value 81
+write 4: increment value to 82
+write 1: increment value to 83
+write 0: increment value to 84
+read 0: get value 84
+read 9: get value 84
+read 6: get value 84
+read 2: get value 84
+read 4: get value 84
+read 1: get value 84
+write 5: increment value to 85
+write 3: increment value to 86
+write 7: increment value to 87
+read 7: get value 87
+read 5: get value 87
+write 2: increment value to 88
+write 6: increment value to 89
+write 8: increment value to 90
+write 9: increment value to 91
+read 8: get value 91
+read 3: get value 91
+write 4: increment value to 92
+write 1: increment value to 93
+write 0: increment value to 94
+read 9: get value 94
+read 0: get value 94
+read 6: get value 94
+read 4: get value 94
+read 2: get value 94
+read 1: get value 94
+write 3: increment value to 95
+write 5: increment value to 96
+write 7: increment value to 97
+read 7: get value 97
+read 5: get value 97
+write 2: increment value to 98
+write 6: increment value to 99
+write 8: increment value to 100
+read 3: get value 100
+read 8: get value 100
+write 0: increment value to 101
+write 1: increment value to 102
+read 6: get value 102
+write 4: increment value to 103
+read 9: get value 103
+write 9: increment value to 104
+read 2: get value 104
+read 0: get value 104
+read 4: get value 104
+read 1: get value 104
+write 3: increment value to 105
+write 5: increment value to 106
+read 7: get value 106
+write 7: increment value to 107
+read 5: get value 107
+write 2: increment value to 108
+write 8: increment value to 109
+write 6: increment value to 110
+read 3: get value 110
+read 8: get value 110
+write 0: increment value to 111
+write 1: increment value to 112
+read 6: get value 112
+write 4: increment value to 113
+read 9: get value 113
+write 9: increment value to 114
+read 2: get value 114
+read 0: get value 114
+read 4: get value 114
+read 1: get value 114
+write 3: increment value to 115
+write 5: increment value to 116
+write 7: increment value to 117
+read 7: get value 117
+read 5: get value 117
+write 8: increment value to 118
+write 6: increment value to 119
+write 2: increment value to 120
+read 3: get value 120
+read 8: get value 120
+write 0: increment value to 121
+write 1: increment value to 122
+read 6: get value 122
+write 4: increment value to 123
+write 9: increment value to 124
+read 9: get value 124
+read 2: get value 124
+read 0: get value 124
+read 4: get value 124
+read 1: get value 124
+write 3: increment value to 125
+write 5: increment value to 126
+write 7: increment value to 127
+read 7: get value 127
+read 5: get value 127
+write 8: increment value to 128
+write 6: increment value to 129
+write 2: increment value to 130
+read 3: get value 130
+read 8: get value 130
+write 0: increment value to 131
+write 1: increment value to 132
+read 6: get value 132
+write 9: increment value to 133
+write 4: increment value to 134
+read 9: get value 134
+read 2: get value 134
+read 0: get value 134
+read 4: get value 134
+read 1: get value 134
+write 3: increment value to 135
+write 5: increment value to 136
+write 7: increment value to 137
+read 7: get value 137
+read 5: get value 137
+write 8: increment value to 138
+write 6: increment value to 139
+write 2: increment value to 140
+read 3: get value 140
+read 8: get value 140
+write 0: increment value to 141
+read 6: get value 141
+write 1: increment value to 142
+write 9: increment value to 143
+write 4: increment value to 144
+read 2: get value 144
+read 9: get value 144
+read 1: get value 144
+read 4: get value 144
+read 0: get value 144
+read 7: get value 144
+write 5: increment value to 145
+read 5: get value 145
+write 6: increment value to 146
+write 7: increment value to 147
+write 2: increment value to 148
+write 3: increment value to 149
+write 8: increment value to 150
+read 8: get value 150
+read 6: get value 150
+write 4: increment value to 151
+read 9: get value 151
+write 1: increment value to 152
+read 4: get value 152
+read 2: get value 152
+write 0: increment value to 153
+read 3: get value 153
+read 5: get value 153
+read 1: get value 153
+write 2: increment value to 154
+read 7: get value 154
+write 8: increment value to 155
+write 6: increment value to 156
+write 7: increment value to 157
+write 9: increment value to 158
+read 0: get value 158
+write 3: increment value to 159
+write 5: increment value to 160
+write 4: increment value to 161
+write 1: increment value to 162
+read 9: get value 162
+write 0: increment value to 163
+read 3: get value 163
+read 1: get value 163
+read 2: get value 163
+read 8: get value 163
+read 5: get value 163
+read 4: get value 163
+write 9: increment value to 164
+write 2: increment value to 165
+read 7: get value 165
+write 8: increment value to 166
+write 5: increment value to 167
+write 7: increment value to 168
+read 6: get value 168
+read 0: get value 168
+write 3: increment value to 169
+write 6: increment value to 170
+write 4: increment value to 171
+read 9: get value 171
+read 2: get value 171
+read 1: get value 171
+write 0: increment value to 172
+read 5: get value 172
+read 3: get value 172
+read 8: get value 172
+write 2: increment value to 173
+read 4: get value 173
+write 7: increment value to 174
+read 6: get value 174
+write 3: increment value to 175
+read 7: get value 175
+write 8: increment value to 176
+write 5: increment value to 177
+write 9: increment value to 178
+read 0: get value 178
+write 1: increment value to 179
+write 6: increment value to 180
+write 4: increment value to 181
+read 9: get value 181
+read 2: get value 181
+read 1: get value 181
+write 0: increment value to 182
+read 5: get value 182
+read 3: get value 182
+read 8: get value 182
+write 2: increment value to 183
+write 7: increment value to 184
+read 4: get value 184
+read 6: get value 184
+write 3: increment value to 185
+read 7: get value 185
+write 8: increment value to 186
+write 5: increment value to 187
+write 9: increment value to 188
+read 0: get value 188
+write 1: increment value to 189
+write 6: increment value to 190
+write 4: increment value to 191
+read 9: get value 191
+read 2: get value 191
+read 3: get value 191
+read 1: get value 191
+write 0: increment value to 192
+read 4: get value 192
+read 5: get value 192
+write 2: increment value to 193
+read 6: get value 193
+write 7: increment value to 194
+read 8: get value 194
+write 3: increment value to 195
+read 7: get value 195
+write 8: increment value to 196
+write 5: increment value to 197
+write 9: increment value to 198
+read 0: get value 198
+write 1: increment value to 199
+write 6: increment value to 200
+write 4: increment value to 201
+read 1: get value 201
+read 4: get value 201
+read 3: get value 201
+read 6: get value 201
+write 0: increment value to 202
+read 9: get value 202
+read 5: get value 202
+write 7: increment value to 203
+read 8: get value 203
+write 9: increment value to 204
+read 0: get value 204
+read 2: get value 204
+write 6: increment value to 205
+write 8: increment value to 206
+read 7: get value 206
+write 5: increment value to 207
+write 2: increment value to 208
+write 1: increment value to 209
+write 3: increment value to 210
+write 4: increment value to 211
+read 1: get value 211
+read 4: get value 211
+read 3: get value 211
+read 6: get value 211
+read 9: get value 211
+read 5: get value 211
+write 0: increment value to 212
+read 8: get value 212
+write 7: increment value to 213
+write 9: increment value to 214
+read 0: get value 214
+read 2: get value 214
+write 6: increment value to 215
+write 8: increment value to 216
+write 2: increment value to 217
+write 5: increment value to 218
+read 7: get value 218
+write 1: increment value to 219
+write 3: increment value to 220
+write 4: increment value to 221
+read 1: get value 221
+read 4: get value 221
+read 3: get value 221
+read 5: get value 221
+read 9: get value 221
+read 6: get value 221
+write 7: increment value to 222
+write 0: increment value to 223
+read 8: get value 223
+write 9: increment value to 224
+read 0: get value 224
+read 2: get value 224
+write 6: increment value to 225
+write 8: increment value to 226
+write 2: increment value to 227
+write 5: increment value to 228
+read 7: get value 228
+write 1: increment value to 229
+write 3: increment value to 230
+write 4: increment value to 231
+read 1: get value 231
+read 4: get value 231
+read 3: get value 231
+read 5: get value 231
+read 6: get value 231
+write 0: increment value to 232
+read 8: get value 232
+write 9: increment value to 233
+read 9: get value 233
+write 7: increment value to 234
+read 2: get value 234
+read 0: get value 234
+write 6: increment value to 235
+write 8: increment value to 236
+write 2: increment value to 237
+write 5: increment value to 238
+read 7: get value 238
+write 1: increment value to 239
+write 3: increment value to 240
+write 4: increment value to 241
+read 1: get value 241
+read 4: get value 241
+read 3: get value 241
+read 5: get value 241
+read 6: get value 241
+write 0: increment value to 242
+write 9: increment value to 243
+read 8: get value 243
+read 9: get value 243
+write 7: increment value to 244
+read 2: get value 244
+read 0: get value 244
+write 6: increment value to 245
+write 8: increment value to 246
+write 5: increment value to 247
+write 2: increment value to 248
+read 7: get value 248
+write 1: increment value to 249
+write 3: increment value to 250
+write 4: increment value to 251
+read 1: get value 251
+read 4: get value 251
+read 3: get value 251
+read 6: get value 251
+read 5: get value 251
+write 9: increment value to 252
+write 0: increment value to 253
+read 8: get value 253
+write 7: increment value to 254
+read 9: get value 254
+read 2: get value 254
+read 0: get value 254
+write 6: increment value to 255
+write 8: increment value to 256
+write 2: increment value to 257
+write 5: increment value to 258
+read 7: get value 258
+write 1: increment value to 259
+write 3: increment value to 260
+write 4: increment value to 261
+read 1: get value 261
+read 4: get value 261
+read 3: get value 261
+read 6: get value 261
+write 9: increment value to 262
+write 0: increment value to 263
+read 5: get value 263
+read 8: get value 263
+write 7: increment value to 264
+read 9: get value 264
+read 2: get value 264
+read 0: get value 264
+write 6: increment value to 265
+write 5: increment value to 266
+write 8: increment value to 267
+write 2: increment value to 268
+read 7: get value 268
+write 1: increment value to 269
+write 3: increment value to 270
+write 4: increment value to 271
+read 1: get value 271
+read 4: get value 271
+read 3: get value 271
+read 6: get value 271
+write 9: increment value to 272
+write 0: increment value to 273
+read 8: get value 273
+read 9: get value 273
+write 7: increment value to 274
+read 0: get value 274
+write 5: increment value to 275
+write 2: increment value to 276
+write 8: increment value to 277
+write 6: increment value to 278
+read 7: get value 278
+write 1: increment value to 279
+read 5: get value 279
+read 2: get value 279
+write 3: increment value to 280
+write 4: increment value to 281
+read 1: get value 281
+read 4: get value 281
+read 3: get value 281
+read 6: get value 281
+write 9: increment value to 282
+write 0: increment value to 283
+read 8: get value 283
+read 9: get value 283
+write 7: increment value to 284
+write 5: increment value to 285
+read 0: get value 285
+write 2: increment value to 286
+write 8: increment value to 287
+read 7: get value 287
+write 6: increment value to 288
+write 1: increment value to 289
+read 5: get value 289
+read 2: get value 289
+write 3: increment value to 290
+write 4: increment value to 291
+read 1: get value 291
+read 4: get value 291
+read 3: get value 291
+read 6: get value 291
+write 9: increment value to 292
+write 0: increment value to 293
+read 8: get value 293
+read 9: get value 293
+write 7: increment value to 294
+read 0: get value 294
+write 2: increment value to 295
+read 7: get value 295
+write 6: increment value to 296
+read 5: get value 296
+write 3: increment value to 297
+write 1: increment value to 298
+write 5: increment value to 299
+read 2: get value 299
+write 8: increment value to 300
+write 4: increment value to 301
+read 4: get value 301
+read 1: get value 301
+read 3: get value 301
+read 6: get value 301
+write 0: increment value to 302
+write 9: increment value to 303
+read 8: get value 303
+read 9: get value 303
+read 7: get value 303
+read 5: get value 303
+write 2: increment value to 304
+write 5: increment value to 305
+write 7: increment value to 306
+write 8: increment value to 307
+write 3: increment value to 308
+write 1: increment value to 309
+read 2: get value 309
+write 6: increment value to 310
+read 0: get value 310
+write 4: increment value to 311
+read 4: get value 311
+read 3: get value 311
+read 1: get value 311
+read 6: get value 311
+write 0: increment value to 312
+write 9: increment value to 313
+read 8: get value 313
+read 9: get value 313
+read 7: get value 313
+read 5: get value 313
+write 2: increment value to 314
+write 5: increment value to 315
+write 7: increment value to 316
+write 8: increment value to 317
+write 3: increment value to 318
+write 1: increment value to 319
+read 2: get value 319
+write 6: increment value to 320
+read 0: get value 320
+write 4: increment value to 321
+read 4: get value 321
+read 1: get value 321
+read 3: get value 321
+read 6: get value 321
+write 0: increment value to 322
+write 9: increment value to 323
+read 8: get value 323
+read 9: get value 323
+read 7: get value 323
+write 2: increment value to 324
+read 5: get value 324
+write 5: increment value to 325
+write 7: increment value to 326
+write 8: increment value to 327
+write 3: increment value to 328
+read 2: get value 328
+write 1: increment value to 329
+write 6: increment value to 330
+read 0: get value 330
+write 4: increment value to 331
+read 4: get value 331
+read 1: get value 331
+read 3: get value 331
+read 6: get value 331
+write 0: increment value to 332
+write 9: increment value to 333
+read 8: get value 333
+read 9: get value 333
+read 7: get value 333
+write 2: increment value to 334
+read 5: get value 334
+write 5: increment value to 335
+write 7: increment value to 336
+write 8: increment value to 337
+write 3: increment value to 338
+read 2: get value 338
+write 1: increment value to 339
+write 6: increment value to 340
+read 0: get value 340
+write 4: increment value to 341
+read 4: get value 341
+read 1: get value 341
+read 3: get value 341
+write 0: increment value to 342
+write 9: increment value to 343
+read 6: get value 343
+read 8: get value 343
+read 9: get value 343
+read 7: get value 343
+write 2: increment value to 344
+read 5: get value 344
+write 5: increment value to 345
+write 7: increment value to 346
+write 8: increment value to 347
+write 3: increment value to 348
+write 1: increment value to 349
+read 2: get value 349
+write 6: increment value to 350
+read 0: get value 350
+write 4: increment value to 351
+read 4: get value 351
+read 1: get value 351
+read 3: get value 351
+write 0: increment value to 352
+write 9: increment value to 353
+read 9: get value 353
+write 2: increment value to 354
+read 6: get value 354
+read 8: get value 354
+read 5: get value 354
+read 7: get value 354
+write 5: increment value to 355
+write 7: increment value to 356
+write 8: increment value to 357
+write 3: increment value to 358
+write 1: increment value to 359
+read 2: get value 359
+write 6: increment value to 360
+read 0: get value 360
