@@ -90,7 +90,7 @@ class __shared_count;
 class __weak_count;
 
 template <typename _Ptr>
-class _sp_counted_ptr final : public _sp_counted_base {
+class _sp_counted_ptr : public _sp_counted_base {
  public:
   explicit _sp_counted_ptr(_Ptr __p) noexcept : _M_ptr(__p) {}
 
@@ -238,9 +238,33 @@ template <typename _Tp>
 class __shared_ptr {
  public:
   using element_type = typename std::remove_extent<_Tp>;
+  /**** default constructor ****/
   constexpr __shared_ptr() noexcept : _M_ptr(0), _M_ref_count() {}
 
+  template <typename _Yp>
+  __shared_ptr(const __shared_ptr<_Yp> &__r) noexcept
+      : _M_ptr(__r._M_ptr), _M_ref_count(__r._M_ref_count) {}
+
+  template <typename _Yp>
+  __shared_ptr(__shared_ptr<_Yp> &&__r) noexcept
+      : _M_ptr(__r._M_ptr), _M_ref_count() {
+    _M_ref_count.__swap(__r._M_ref_count);
+    __r._M_ptr = nullptr;
+  }
+
+  template <typename _Yp>
+  __shared_ptr(const __weak_ptr<_Yp> &__r) noexcept
+      : _M_ref_count(__r._M_ref_count) {
+    _M_ptr = __r._M_ptr;
+  }
+
+  __shared_ptr(const __shared_ptr &) noexcept = default;
+  __shared_ptr &operator=(const __shared_ptr &) noexcept = default;
+  ~__shared_ptr() = default;
+
  private:
+  /*Contained pointer. The raw instance pointer is stored here.*/
   element_type *_M_ptr;
+  /* Reference counter. */
   __shared_count _M_ref_count;
 };
