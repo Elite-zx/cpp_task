@@ -22,6 +22,8 @@ class _sp_counted_base {
   /**** called when _weak_count drops to zero ****/
   virtual void _weak_destroy() { delete this; }
 
+  virtual void *_M_get_deleter(const std::type_info &) noexcept = 0;
+
   /**** increment ****/
   void _use_add_ref() { _use_count.fetch_add(1, std::memory_order_relaxed); }
 
@@ -73,12 +75,16 @@ inline void _sp_counted_base::_use_sub_ref_last() noexcept {
   if (_weak_count.fetch_sub(1, std::memory_order_acq_rel) == 1) _weak_destroy();
 }
 
-/* forward declarations */
+/**** forward declarations  ****/
 template <typename _Tp>
 class __shared_ptr;
 
 template <typename _Tp>
 class __weak_ptr;
+
+/* type erasure */
+template <typename _Tp>
+class __shared_ptr_access;
 
 template <typename _Tp>
 class shared_ptr;
@@ -89,6 +95,7 @@ class weak_ptr;
 class __shared_count;
 class __weak_count;
 
+/*  control block of shared_ptr */
 template <typename _Ptr>
 class _sp_counted_ptr : public _sp_counted_base {
  public:
@@ -98,14 +105,19 @@ class _sp_counted_ptr : public _sp_counted_base {
 
   virtual void _weak_destroy() noexcept { delete this; }
 
- private:
+  /* custom deleter */
+  virtual void *_M_get_deleter(const std::type_info &) noexcept {
+    return nullptr;
+  }
+
   _sp_counted_ptr(const _sp_counted_ptr &) = delete;
   _sp_counted_ptr &operator=(const _sp_counted_ptr &) = delete;
 
+ private:
   _Ptr _M_ptr;
 };
 
-/*  specialization for nullptr_t */
+/* specialization for nullptr_t, do nothing*/
 template <>
 inline void _sp_counted_ptr<std::nullptr_t>::_use_dispose() noexcept {}
 
@@ -151,10 +163,14 @@ class __shared_count {
 
   bool __unique() const noexcept { return this->_get_use_count() == 1; }
 
-  /**** check whether this < rhs ****/
-  bool __less(const __shared_count &__rhs) const noexcept {
-    return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi);
+  void *_M_get_deleter(const std::type_info &__ti) const noexcept {
+    return _M_pi ? _M_pi->_M_get_deleter(__ti) : nullptr;
   }
+
+  /**** check whether this < rhs, for owner_before ****/
+  /* bool __less(const __shared_count &__rhs) const noexcept { */
+  /*   return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi); */
+  /* } */
 
  private:
   friend class __weak_count;
@@ -220,14 +236,14 @@ class __weak_count {
     return _M_pi != nullptr ? _M_pi->_get_use_count() : 0;
   }
 
-  /**** check whether this < rhs ****/
-  bool __less(const __shared_count &__rhs) const noexcept {
-    return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi);
-  }
-
-  bool __less(const __weak_count &__rhs) const noexcept {
-    return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi);
-  }
+  /**** check whether this < rhs, for owner_before ****/
+  /* bool __less(const __shared_count &__rhs) const noexcept { */
+  /*   return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi); */
+  /* } */
+  /*  */
+  /* bool __less(const __weak_count &__rhs) const noexcept { */
+  /*   return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi); */
+  /* } */
 
  private:
   friend class __shared_count;
@@ -241,30 +257,103 @@ class __shared_ptr {
   /**** default constructor ****/
   constexpr __shared_ptr() noexcept : _M_ptr(0), _M_ref_count() {}
 
-  template <typename _Yp>
-  __shared_ptr(const __shared_ptr<_Yp> &__r) noexcept
+  __shared_ptr(const __shared_ptr &__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count(__r._M_ref_count) {}
 
-  template <typename _Yp>
-  __shared_ptr(__shared_ptr<_Yp> &&__r) noexcept
+  __shared_ptr(__shared_ptr &&__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count() {
     _M_ref_count.__swap(__r._M_ref_count);
     __r._M_ptr = nullptr;
   }
 
-  template <typename _Yp>
-  __shared_ptr(const __weak_ptr<_Yp> &__r) noexcept
+  __shared_ptr(const __weak_ptr<_Tp> &__r) noexcept
       : _M_ref_count(__r._M_ref_count) {
     _M_ptr = __r._M_ptr;
   }
 
-  __shared_ptr(const __shared_ptr &) noexcept = default;
-  __shared_ptr &operator=(const __shared_ptr &) noexcept = default;
+  __shared_ptr &operator=(const __shared_ptr &__r) noexcept {
+    _M_ptr = __r._M_ptr;
+    _M_ref_count = __r._M_ref_count;
+    return *this;
+  }
+
+  __shared_ptr &operator=(__shared_ptr &&__r) noexcept {
+    __shared_ptr(std::move(__r)).swap(*this);
+    return *this;
+  }
+
+  void reset() { __shared_ptr().__swap(*this); }
+
+  void reset(_Tp *__p) {
+    if (__p != nullptr && __p != _M_ptr) {
+      shared_ptr(__p).swap(*this);
+    } else {
+      throw std::logic_error("ptr is illegal");
+    }
+  }
+
+  /* Return the stored pointer. */
+  element_type *get() const noexcept { return _M_ptr; }
+
+  /* Return true if the stored pointer is not null. */
+  explicit operator bool() const noexcept { return _M_ptr != nullptr; }
+
+  /* Return true if use_count() == 1. */
+  bool unique() const noexcept { return _M_ref_count.__unique(); }
+
+  /* If *this owns a pointer, return the number of owners, otherwise zero. */
+  long use_count() const noexcept { return _M_ref_count._get_use_count(); }
+
+  /* Exchange both the owned pointer and the stored pointer. */
+  void swap(__shared_ptr &__other) noexcept {
+    std::swap(_M_ptr, __other._M_ptr);
+    _M_ref_count.__swap(__other._M_refcount);
+  }
+
   ~__shared_ptr() = default;
 
  private:
   /*Contained pointer. The raw instance pointer is stored here.*/
   element_type *_M_ptr;
-  /* Reference counter. */
+  /* Reference counter, a.k.a control block. */
   __shared_count _M_ref_count;
+};
+
+template <typename _Tp>
+class __weak_ptr {
+  using element_type = typename std::remove_extent<_Tp>;
+
+  __weak_ptr(const __shared_ptr<_Tp> &__r) noexcept
+      : _M_ptr(__r._M_ptr), _M_ref_count(__r._M_ref_count) {}
+
+  __weak_ptr(__weak_ptr &&__r) noexcept
+      : _M_ptr(__r._M_ptr), _M_ref_count(std::move(__r._M_refcount)) {
+    __r._M_ptr = nullptr;
+  }
+
+  __weak_ptr &operator=(const __weak_ptr &__r) noexcept = default;
+
+  __weak_ptr &operator=(__weak_ptr &&__r) noexcept {
+    __weak_ptr(std::move(__r)).swap(*this);
+    return *this;
+  }
+
+  __shared_ptr<_Tp> lock() const noexcept {
+    return __shared_ptr<element_type>(*this);
+  }
+
+  long use_count() const noexcept { return _M_ref_count._get_use_count(); }
+
+  bool expired() const noexcept { return _M_ref_count._get_use_count() == 0; }
+
+  void reset() noexcept { __weak_ptr().swap(*this); }
+
+  void swap(__weak_ptr &__s) noexcept {
+    std::swap(_M_ptr, __s._M_ptr);
+    _M_ref_count.__swap(__s._M_refcount);
+  }
+
+ private:
+  element_type *_M_ptr;      /* Contained pointer.*/
+  __weak_count _M_ref_count; /* Reference counter.*/
 };
