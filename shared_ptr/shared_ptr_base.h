@@ -168,9 +168,11 @@ class __shared_count {
   }
 
   /**** check whether this < rhs, for owner_before ****/
-  /* bool __less(const __shared_count &__rhs) const noexcept { */
-  /*   return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi); */
-  /* } */
+  bool __less(const __shared_count &__rhs) const noexcept {
+    return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi);
+  }
+
+  bool _M_less(const __weak_count &__rhs) const noexcept;
 
  private:
   friend class __weak_count;
@@ -237,18 +239,23 @@ class __weak_count {
   }
 
   /**** check whether this < rhs, for owner_before ****/
-  /* bool __less(const __shared_count &__rhs) const noexcept { */
-  /*   return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi); */
-  /* } */
-  /*  */
-  /* bool __less(const __weak_count &__rhs) const noexcept { */
-  /*   return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi); */
-  /* } */
+  bool __less(const __shared_count &__rhs) const noexcept {
+    return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi);
+  }
+
+  bool __less(const __weak_count &__rhs) const noexcept {
+    return std::less<_sp_counted_base *>{}(this->_M_pi, __rhs._M_pi);
+  }
 
  private:
   friend class __shared_count;
   _sp_counted_base *_M_pi;
 };
+
+/* now weak_count is defined */
+inline bool __shared_count::_M_less(const __weak_count &__rhs) const noexcept {
+  return std::less<_sp_counted_base *>()(this->_M_pi, __rhs._M_pi);
+}
 
 template <typename _Tp>
 class __shared_ptr {
@@ -256,6 +263,8 @@ class __shared_ptr {
   using element_type = typename std::remove_extent<_Tp>;
   /**** default constructor ****/
   constexpr __shared_ptr() noexcept : _M_ptr(0), _M_ref_count() {}
+
+  explicit __shared_ptr(_Tp *__p) : _M_ptr(__p), _M_ref_count(__p){};
 
   __shared_ptr(const __shared_ptr &__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count(__r._M_ref_count) {}
@@ -266,7 +275,7 @@ class __shared_ptr {
     __r._M_ptr = nullptr;
   }
 
-  __shared_ptr(const __weak_ptr<_Tp> &__r) noexcept
+  explicit __shared_ptr(const __weak_ptr<_Tp> &__r) noexcept
       : _M_ref_count(__r._M_ref_count) {
     _M_ptr = __r._M_ptr;
   }
@@ -307,7 +316,7 @@ class __shared_ptr {
   /* Exchange both the owned pointer and the stored pointer. */
   void swap(__shared_ptr &__other) noexcept {
     std::swap(_M_ptr, __other._M_ptr);
-    _M_ref_count.__swap(__other._M_refcount);
+    _M_ref_count.__swap(__other._M_ref_count);
   }
 
   ~__shared_ptr() = default;
@@ -326,12 +335,26 @@ class __weak_ptr {
   __weak_ptr(const __shared_ptr<_Tp> &__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count(__r._M_ref_count) {}
 
+  __weak_ptr(__weak_ptr &__r) noexcept : _M_ref_count(__r._M_ref_count) {
+    _M_ptr == __r.lock().get();
+  }
+
   __weak_ptr(__weak_ptr &&__r) noexcept
-      : _M_ptr(__r._M_ptr), _M_ref_count(std::move(__r._M_refcount)) {
+      : _M_ptr(__r._M_ptr), _M_ref_count(std::move(__r._M_ref_count)) {
     __r._M_ptr = nullptr;
   }
 
-  __weak_ptr &operator=(const __weak_ptr &__r) noexcept = default;
+  __weak_ptr &operator=(const __weak_ptr &__r) noexcept {
+    _M_ptr = __r.lock().get();
+    _M_ref_count = __r._M_ref_count;
+    return *this;
+  }
+
+  __weak_ptr &operator=(const __shared_ptr<_Tp> &__r) noexcept {
+    _M_ptr = __r._M_ptr;
+    _M_ref_count = __r._M_ref_count;
+    return *this;
+  }
 
   __weak_ptr &operator=(__weak_ptr &&__r) noexcept {
     __weak_ptr(std::move(__r)).swap(*this);
@@ -350,7 +373,7 @@ class __weak_ptr {
 
   void swap(__weak_ptr &__s) noexcept {
     std::swap(_M_ptr, __s._M_ptr);
-    _M_ref_count.__swap(__s._M_refcount);
+    _M_ref_count.__swap(__s._M_ref_count);
   }
 
  private:
