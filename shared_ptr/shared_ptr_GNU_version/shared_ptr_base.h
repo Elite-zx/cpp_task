@@ -50,7 +50,7 @@ class _sp_counted_base {
    * This function is required for type-erased access to custom deleters
    * associated with the control block.
    *
-   * @param __ti The std::type_info object of the deleter type.
+   * @__ti The std::type_info object of the deleter type.
    * @return A void pointer to the deleter, or nullptr if no custom deleter is
    * set.
    */
@@ -212,13 +212,13 @@ class __weak_count;
  * @tparam _Ptr Type of the pointer to manage.
  */
 template <typename _Ptr>
-class _sp_counted_ptr : public _sp_counted_base {
+class _sp_counted_ptr final : public _sp_counted_base {
  public:
   /**
    * Constructor that initializes the control block with a pointer to the
    * managed object.
    *
-   * @param __p Pointer to the object managed by shared_ptr.
+   * @__p Pointer to the object managed by shared_ptr.
    */
   explicit _sp_counted_ptr(_Ptr __p) noexcept : _M_ptr(__p) {}
 
@@ -241,7 +241,7 @@ class _sp_counted_ptr : public _sp_counted_base {
    * This function provides a way to access a potential custom deleter
    * associated with the control block.
    *
-   * @param __ti The std::type_info of the requested deleter type.
+   * @__ti The std::type_info of the requested deleter type.
    * @return Void pointer to the custom deleter or nullptr if no custom deleter
    * is set.
    */
@@ -284,7 +284,7 @@ class __shared_count {
    * pointer.
    *
    * @tparam _Ptr Type of the pointer to be managed.
-   * @param __p Pointer to the object to be managed by shared_ptr.
+   * @__p Pointer to the object to be managed by shared_ptr.
    */
   template <typename _Ptr>
   explicit __shared_count(_Ptr __p) : _M_pi(0) {
@@ -305,7 +305,7 @@ class __shared_count {
    * Creates a new __shared_count that shares ownership of the managed object
    * with another instance.
    *
-   * @param __r Another __shared_count instance to share ownership with.
+   * @__r Another __shared_count instance to share ownership with.
    */
   __shared_count(const __shared_count &__r) noexcept : _M_pi(__r._M_pi) {
     if (_M_pi != nullptr) _M_pi->_use_add_ref();
@@ -316,7 +316,7 @@ class __shared_count {
    * Shares ownership of the managed object with another __shared_count
    * instance.
    *
-   * @param __r Another __shared_count instance to share ownership with.
+   * @__r Another __shared_count instance to share ownership with.
    * @return *this
    */
   __shared_count &operator=(const __shared_count &__r) noexcept {
@@ -333,7 +333,7 @@ class __shared_count {
    * Swaps the control block managed by this instance with another
    * __shared_count instance.
    *
-   * @param __r Another __shared_count instance to swap with.
+   * @__r Another __shared_count instance to swap with.
    */
   void __swap(__shared_count &__r) noexcept {
     _sp_counted_base *__tmp = __r._M_pi;
@@ -361,7 +361,7 @@ class __shared_count {
    * Attempts to retrieve a pointer to a custom deleter associated with the
    * control block, if any.
    *
-   * @param __ti The std::type_info of the requested deleter type.
+   * @__ti The std::type_info of the requested deleter type.
    * @return Void pointer to the custom deleter or nullptr if no custom deleter
    * is set.
    */
@@ -373,7 +373,7 @@ class __shared_count {
    * Compares the address of the control block managed by this instance with
    * another __shared_count instance for owner-based ordering.
    *
-   * @param __rhs Another __shared_count instance to compare with.
+   * @__rhs Another __shared_count instance to compare with.
    * @return true if this instance precedes __rhs in owner-based order, false
    * otherwise.
    */
@@ -385,16 +385,18 @@ class __shared_count {
    * Compares the address of the control block managed by this instance with a
    * __weak_count instance for owner-based ordering.
    *
-   * @param __rhs A __weak_count instance to compare with.
+   * @__rhs A __weak_count instance to compare with.
    * @return true if this instance precedes __rhs in owner-based order, false
    * otherwise.
    */
   bool _M_less(const __weak_count &__rhs) const noexcept;
 
  private:
-  // Friend class declaration to allow __weak_count to access private members.
+  /* Friend class declaration to allow __weak_count to access private members.
+   */
   friend class __weak_count;
-  _sp_counted_base *_M_pi;  // Pointer to the control block.
+  /* Pointer to the control block. */
+  _sp_counted_base *_M_pi;
 };
 
 /**
@@ -421,7 +423,7 @@ class __weak_count {
    * Copy constructor from a __shared_count object.
    * Increases the weak count of the control block that __r is associated with.
    *
-   * @param __r A __shared_count object from which to copy.
+   * @__r A __shared_count object from which to copy.
    */
   __weak_count(const __shared_count &__r) noexcept : _M_pi(__r._M_pi) {
     if (_M_pi != nullptr) _M_pi->_weak_add_ref();
@@ -432,7 +434,7 @@ class __weak_count {
    * Creates a new __weak_count object as a copy of an existing one,
    * incrementing the weak reference count of the shared control block.
    *
-   * @param __r The __weak_count object to copy.
+   * @__r The __weak_count object to copy.
    */
   __weak_count(const __weak_count &__r) noexcept : _M_pi(__r._M_pi) {
     if (_M_pi != nullptr) _M_pi->_weak_add_ref();
@@ -442,7 +444,7 @@ class __weak_count {
    * Move constructor.
    * Transfers ownership of the weak count from __r to this object.
    *
-   * @param __r The __weak_count object to move from.
+   * @__r The __weak_count object to move from.
    */
   __weak_count(__weak_count &&__r) noexcept : _M_pi(__r._M_pi) {
     __r._M_pi = nullptr;
@@ -461,7 +463,7 @@ class __weak_count {
    * Copy assignment operator.
    * Replaces the current weak count with that of another __weak_count object.
    *
-   * @param __r The __weak_count object to assign from.
+   * @__r The __weak_count object to assign from.
    * @return A reference to this __weak_count object.
    */
   __weak_count &operator=(const __shared_count &__r) noexcept {
@@ -476,7 +478,7 @@ class __weak_count {
    * Move assignment operator.
    * Transfers the weak count from another __weak_count object to this one.
    *
-   * @param __r The __weak_count object to move from.
+   * @__r The __weak_count object to move from.
    * @return A reference to this __weak_count object.
    */
   __weak_count &operator=(__weak_count &&__r) noexcept {
@@ -489,7 +491,7 @@ class __weak_count {
   /**
    * Swaps the weak count with another __weak_count object.
    *
-   * @param __r The other __weak_count object to swap with.
+   * @__r The other __weak_count object to swap with.
    */
   void __swap(__weak_count &__r) noexcept {
     _sp_counted_base *__tmp = __r._M_pi;
@@ -511,7 +513,7 @@ class __weak_count {
    * Compares the ownership of two __weak_count objects.
    * Used to support weak_ptr comparisons.
    *
-   * @param __rhs The right-hand side __weak_count object for comparison.
+   * @__rhs The right-hand side __weak_count object for comparison.
    * @return True if this object's control block is less than that of __rhs.
    */
   bool __less(const __shared_count &__rhs) const noexcept {
@@ -536,7 +538,7 @@ inline bool __shared_count::_M_less(const __weak_count &__rhs) const noexcept {
 template <typename _Tp>
 class __shared_ptr {
  public:
-  // Defines the type of the pointed-to object.
+  /* Defines the type of the pointed-to object. */
   using element_type = typename std::remove_extent<_Tp>;
 
   /**
@@ -546,21 +548,26 @@ class __shared_ptr {
 
   /**
    * Constructor from raw pointer. Takes ownership of the provided pointer.
-   * @param __p A pointer to the dynamically allocated object.
+   * @__p: A pointer to the dynamically allocated object.
    */
   explicit __shared_ptr(_Tp *__p) : _M_ptr(__p), _M_ref_count(__p){};
 
   /**
    * Copy constructor. Creates a new __shared_ptr that shares ownership of the
    * object.
-   * @param __r Another __shared_ptr to share ownership with.
+   * @__r Another __shared_ptr to share ownership with.
    */
   __shared_ptr(const __shared_ptr &__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count(__r._M_ref_count) {}
 
   /**
-   * Move constructor. Transfers ownership from another __shared_ptr.
-   * @param __r Another __shared_ptr to transfer ownership from.
+   * Move constructor. Transfers ownership of the managed object and control
+   * block from another __shared_ptr instance. This constructor initializes the
+   * current object's reference count to zero before swapping it with the
+   * source's reference count, effectively transferring ownership and ensuring
+   * that the moved-from __shared_ptr is left in a safe, empty state.
+   * @__r: Another __shared_ptr instance to transfer ownership from. After
+   * the operation, __r will be empty.
    */
   __shared_ptr(__shared_ptr &&__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count() {
@@ -571,7 +578,7 @@ class __shared_ptr {
   /**
    * Constructs a __shared_ptr from a __weak_ptr, promoting the weak pointer to
    * a shared pointer.
-   * @param __r A __weak_ptr to promote to a __shared_ptr.
+   * @__r A __weak_ptr to promote to a __shared_ptr.
    */
   explicit __shared_ptr(const __weak_ptr<_Tp> &__r) noexcept
       : _M_ref_count(__r._M_ref_count) {
@@ -581,7 +588,7 @@ class __shared_ptr {
   /**
    * Copy assignment operator. Shares ownership of the object pointed to by
    * another __shared_ptr.
-   * @param __r Another __shared_ptr to share ownership with.
+   * @__r Another __shared_ptr to share ownership with.
    */
   __shared_ptr &operator=(const __shared_ptr &__r) noexcept {
     _M_ptr = __r._M_ptr;
@@ -591,7 +598,7 @@ class __shared_ptr {
 
   /**
    * Move assignment operator. Transfers ownership from another __shared_ptr.
-   * @param __r Another __shared_ptr to transfer ownership from.
+   * @__r Another __shared_ptr to transfer ownership from.
    */
   __shared_ptr &operator=(__shared_ptr &&__r) noexcept {
     __shared_ptr(std::move(__r)).swap(*this);
@@ -607,7 +614,7 @@ class __shared_ptr {
   /**
    * Resets the __shared_ptr to manage a different object, if the provided
    * pointer is different from the current one.
-   * @param __p A pointer to the dynamically allocated object to manage.
+   * @__p A pointer to the dynamically allocated object to manage.
    */
   void reset(_Tp *__p) {
     if (__p != nullptr && __p != _M_ptr) {
@@ -640,7 +647,7 @@ class __shared_ptr {
 
   /**
    * Swaps the contents of this __shared_ptr instance with another.
-   * @param __other Another __shared_ptr to swap contents with.
+   * @__other Another __shared_ptr to swap contents with.
    */
   void swap(__shared_ptr &__other) noexcept {
     std::swap(_M_ptr, __other._M_ptr);
@@ -669,7 +676,7 @@ class __weak_ptr {
 
   /**
    * Constructs a __weak_ptr that observes the object owned by a __shared_ptr.
-   * @param __r: A __shared_ptr whose observed object will be shared.
+   * @__r: A __shared_ptr whose observed object will be shared.
    */
   __weak_ptr(const __shared_ptr<_Tp> &__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count(__r._M_ref_count) {}
@@ -677,7 +684,7 @@ class __weak_ptr {
   /**
    * Copy constructor. Constructs a __weak_ptr that shares observation with
    * another __weak_ptr.
-   * @param __r: Another __weak_ptr to share observation with.
+   * @__r: Another __weak_ptr to share observation with.
    */
   __weak_ptr(__weak_ptr &__r) noexcept : _M_ref_count(__r._M_ref_count) {
     _M_ptr == __r.lock().get();
@@ -686,7 +693,7 @@ class __weak_ptr {
   /**
    * Move constructor. Constructs a __weak_ptr by transferring observation from
    * another __weak_ptr.
-   * @param __r Another __weak_ptr to transfer observation from.
+   * @__r Another __weak_ptr to transfer observation from.
    */
   __weak_ptr(__weak_ptr &&__r) noexcept
       : _M_ptr(__r._M_ptr), _M_ref_count(std::move(__r._M_ref_count)) {
@@ -696,7 +703,7 @@ class __weak_ptr {
   /**
    * Copy assignment operator. Shares observation of the object managed by
    * another __weak_ptr.
-   * @param __r Another __weak_ptr to share observation with.
+   * @__r Another __weak_ptr to share observation with.
    */
   __weak_ptr &operator=(const __weak_ptr &__r) noexcept {
     _M_ptr = __r.lock().get();
@@ -706,7 +713,7 @@ class __weak_ptr {
 
   /**
    * Assigns this __weak_ptr to observe the object managed by a __shared_ptr.
-   * @param __r A __shared_ptr whose observed object will be shared.
+   * @__r: A __shared_ptr whose observed object will be shared.
    */
   __weak_ptr &operator=(const __shared_ptr<_Tp> &__r) noexcept {
     _M_ptr = __r._M_ptr;
@@ -716,7 +723,7 @@ class __weak_ptr {
 
   /**
    * Move assignment operator. Transfers observation from another __weak_ptr.
-   * @param __r: Another __weak_ptr to transfer observation from.
+   * @__r: Another __weak_ptr to transfer observation from.
    */
   __weak_ptr &operator=(__weak_ptr &&__r) noexcept {
     __weak_ptr(std::move(__r)).swap(*this);
@@ -747,7 +754,7 @@ class __weak_ptr {
 
   /**
    * Swaps the contents of this __weak_ptr instance with another.
-   * @param __s: Another __weak_ptr to swap contents with.
+   * @__s: Another __weak_ptr to swap contents with.
    */
   void swap(__weak_ptr &__s) noexcept {
     std::swap(_M_ptr, __s._M_ptr);
