@@ -4,28 +4,65 @@
 
 #include "shared_ptr_base.h"
 
+/**
+ * A smart pointer that retains shared ownership of an object through a pointer.
+ * Several shared_ptr objects may own the same object. The object is destroyed
+ * and its memory deallocated when either of the following happens:
+ * - the last remaining shared_ptr owning the object is destroyed
+ * - the last remaining shared_ptr owning the object is assigned another pointer
+ * via operator= or reset().
+ */
 template <typename _Tp>
 class shared_ptr : public __shared_ptr<_Tp> {
  public:
   using element_type = typename std::remove_extent<_Tp>;
 
+  /**
+   * Default constructor. Constructs an empty shared_ptr.
+   */
   constexpr shared_ptr() noexcept : __shared_ptr<_Tp>() {}
 
+  /**
+   * Constructs a shared_ptr that owns the given raw pointer.
+   * @param __p A raw pointer to the object to be managed.
+   */
   explicit shared_ptr(_Tp* __p) : __shared_ptr<_Tp>(__p) {}
 
+  /**
+   * Copy constructor. Creates a new shared_ptr that shares ownership of the
+   * object managed by __r.
+   * @param __r Another shared_ptr to share the managed object with.
+   */
   shared_ptr(const shared_ptr& __r) noexcept : __shared_ptr<_Tp>(__r) {}
 
-  shared_ptr(const shared_ptr&& __r) noexcept
-      : __shared_ptr<_Tp>(std::move(__r)) {}
+  /**
+   * Move constructor. Transfers ownership from __r to this shared_ptr.
+   * @param __r Another shared_ptr to transfer the ownership from.
+   */
+  shared_ptr(shared_ptr&& __r) noexcept : __shared_ptr<_Tp>(std::move(__r)) {}
 
+  /**
+   * Constructs a shared_ptr that shares ownership of the object managed by a
+   * weak_ptr.
+   * @param __r A weak_ptr that manages the desired object.
+   */
   explicit shared_ptr(const weak_ptr<_Tp>& __r) : __shared_ptr<_Tp>(__r) {}
 
+  /**
+   * Copy assignment operator. Replaces the managed object with the one managed
+   * by __r.
+   * @param __r Another shared_ptr to assign from.
+   */
   shared_ptr& operator=(const shared_ptr& __r) noexcept {
     this->__shared_ptr<_Tp>::operator=(__r);
     return *this;
   }
 
-  shared_ptr& operator=(const shared_ptr&& __r) noexcept {
+  /**
+   * Move assignment operator. Transfers ownership from __r to this shared_ptr.
+   * @param __r Another shared_ptr to assign from.
+   */
+  shared_ptr& operator=(shared_ptr&& __r) noexcept {
     this->__shared_ptr<_Tp>::operator=(std::move(__r));
     return *this;
   }
@@ -142,6 +179,11 @@ inline bool operator>=(std::nullptr_t, const shared_ptr<_Tp>& __a) noexcept {
   return !(nullptr < __a);
 }
 
+/**
+ * Swaps the contents of two shared_ptr objects.
+ * @param __a One shared_ptr to swap.
+ * @param __b Another shared_ptr to swap with.
+ */
 template <typename _Tp>
 inline void swap(shared_ptr<_Tp>& __a, shared_ptr<_Tp>& __b) {
   __a.swap(__b);
@@ -171,9 +213,18 @@ class weak_ptr : public __weak_ptr<_Tp> {
     return *this;
   }
 
+  /**
+   * Locks this weak_ptr, returning a shared_ptr that owns the object.
+   * If the object has already been deleted, the returned shared_ptr is empty.
+   */
   shared_ptr<_Tp> lock() const noexcept { return shared_ptr<_Tp>(*this); }
 };
 
+/**
+ * Swaps the contents of two weak_ptr objects.
+ * @param __a One weak_ptr to swap.
+ * @param __b Another weak_ptr to swap with.
+ */
 template <typename _Tp>
 inline void swap(weak_ptr<_Tp>& __a, weak_ptr<_Tp>& __b) noexcept {
   __a.swap(__b);
