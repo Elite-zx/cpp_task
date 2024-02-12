@@ -707,19 +707,19 @@ class __shared_ptr {
 
  private:
   /*  initialize _M_weak_this if _Tp inherits from
-   * __enable_shared_from_this<_Tp> */
+   * __enable_shared_from_this<_Tp>, otherwise do nothing */
   template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
   typename std::enable_if<
       std::is_base_of_v<enable_shared_from_this<_Tp>, _Tp>>::type
   _M_enable_shared_from_this_with(_Tp *__p) noexcept {
     if (auto __base = __enable_shared_from_this_base(_M_ref_count, __p))
-      __base->_M_weak_assign(const_cast<_Tp2>(__p), _M_ref_count);
+      __base->_M_weak_assign(const_cast<_Tp2*>(__p), _M_ref_count);
   }
 
   template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
   typename std::enable_if<
       !std::is_base_of_v<enable_shared_from_this<_Tp>, _Tp>>::type
-  _M_enable_shared_from_this_with(_Tp *__p) noexcept {}
+  _M_enable_shared_from_this_with(_Tp *) noexcept {}
 
   /*Contained pointer. The raw instance pointer is stored here.*/
   element_type *_M_ptr;
