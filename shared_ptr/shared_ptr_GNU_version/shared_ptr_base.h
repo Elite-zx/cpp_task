@@ -200,6 +200,9 @@ class shared_ptr;
 template <typename _Tp>
 class weak_ptr;
 
+template <typename _Tp>
+class enable_shared_from_this;
+
 /* Classes for managing shared and weak reference counts. */
 class __shared_count;
 class __weak_count;
@@ -530,6 +533,49 @@ inline bool __shared_count::_M_less(const __weak_count &__rhs) const noexcept {
   return std::less<_sp_counted_base *>()(this->_M_pi, __rhs._M_pi);
 }
 
+template <typename _Tp>
+class __enable_shared_from_this {
+ protected:
+  constexpr __enable_shared_from_this() noexcept {}
+  __enable_shared_from_this(const __enable_shared_from_this &) noexcept {}
+
+  __enable_shared_from_this &operator=(
+      const __enable_shared_from_this &) noexcept {
+    return *this;
+  }
+
+  ~__enable_shared_from_this() {}
+
+ public:
+  __shared_ptr<_Tp> share_from_this() {
+    return shared_ptr<_Tp>(this->_M_weak_this);
+  }
+  __shared_ptr<const _Tp> share_from_this() const {
+    return shared_ptr<const _Tp>(this->_M_weak_this);
+  }
+
+  __weak_ptr<_Tp> weak_from_this() noexcept { return this->_M_weak_this; }
+
+  __weak_ptr<const _Tp> weak_from_this() const noexcept {
+    return this->_M_weak_this;
+  }
+
+ private:
+  void _M_weak_assign(_Tp *__p, const __shared_count &__n) const noexcept {
+    _M_weak_this._M_assign(__p, __n);
+  }
+
+  friend const __enable_shared_from_this *__enable_shared_from_this_base(
+      const __shared_count &, const __enable_shared_from_this *__p) {
+    return __p;
+  }
+
+  template <typename>
+  friend class __shared_ptr;
+
+  mutable weak_ptr<_Tp> _M_weak_this;
+};
+
 /**
  * A smart pointer type that manages a dynamically allocated object through a
  * pointer. The object is disposed of using delete when the last shared_ptr
@@ -550,7 +596,9 @@ class __shared_ptr {
    * Constructor from raw pointer. Takes ownership of the provided pointer.
    * @__p: A pointer to the dynamically allocated object.
    */
-  explicit __shared_ptr(_Tp *__p) : _M_ptr(__p), _M_ref_count(__p){};
+  explicit __shared_ptr(_Tp *__p) : _M_ptr(__p), _M_ref_count(__p) {
+    _M_enable_shared_from_this_with(__p);
+  };
 
   /**
    * Copy constructor. Creates a new __shared_ptr that shares ownership of the
@@ -658,6 +706,21 @@ class __shared_ptr {
   ~__shared_ptr() = default;
 
  private:
+  /*  initialize _M_weak_this if _Tp inherits from
+   * __enable_shared_from_this<_Tp> */
+  template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
+  typename std::enable_if<
+      std::is_base_of_v<enable_shared_from_this<_Tp>, _Tp>>::type
+  _M_enable_shared_from_this_with(_Tp *__p) noexcept {
+    if (auto __base = __enable_shared_from_this_base(_M_ref_count, __p))
+      __base->_M_weak_assign(const_cast<_Tp2>(__p), _M_ref_count);
+  }
+
+  template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
+  typename std::enable_if<
+      !std::is_base_of_v<enable_shared_from_this<_Tp>, _Tp>>::type
+  _M_enable_shared_from_this_with(_Tp *__p) noexcept {}
+
   /*Contained pointer. The raw instance pointer is stored here.*/
   element_type *_M_ptr;
   /* Reference counter, a.k.a control block. */
@@ -762,6 +825,15 @@ class __weak_ptr {
   }
 
  private:
+  /* Used by __enable_shared_from_this */
+  void _M_assign(_Tp *__ptr, const __shared_count &__ref_count) noexcept {
+    if (use_count() == 0) {
+      _M_ptr = __ptr;
+      _M_ref_count = __ref_count;
+    }
+  }
+  friend class enable_shared_from_this<_Tp>;
+  friend class __enable_shared_from_this<_Tp>;
   element_type *_M_ptr;      /* Contained pointer.*/
   __weak_count _M_ref_count; /* Reference counter.*/
 };
