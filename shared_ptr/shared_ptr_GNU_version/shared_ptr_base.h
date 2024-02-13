@@ -585,7 +585,7 @@ template <typename _Tp>
 class __shared_ptr {
  public:
   /* Defines the type of the pointed-to object. */
-  using element_type = typename std::remove_extent<_Tp>;
+  using element_type = typename std::remove_extent<_Tp>::type;
 
   /**
    * Default constructor. Constructs an empty __shared_ptr.
@@ -653,6 +653,22 @@ class __shared_ptr {
     return *this;
   }
 
+  element_type &operator*() const noexcept {
+    if (get() != nullptr) {
+      return *get();
+    } else {
+      throw std::logic_error("shared_ptr is empty");
+    }
+  }
+
+  element_type *operator->() const noexcept {
+    if (get() != nullptr) {
+      return get();
+    } else {
+      throw std::logic_error("shared_ptr is empty");
+    }
+  }
+
   /**
    * Resets the __shared_ptr to empty, decreasing the reference count of the
    * managed object if present.
@@ -705,12 +721,14 @@ class __shared_ptr {
   /* Destructor automatically defined. */
   ~__shared_ptr() = default;
 
+  friend class __weak_ptr<_Tp>;
+
  private:
   /*  initialize _M_weak_this if _Tp inherits from
    * __enable_shared_from_this<_Tp>, otherwise do nothing */
   template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
   typename std::enable_if<
-      std::is_base_of_v<__enable_shared_from_this<_Tp>, _Tp>>::type
+      std::is_base_of_v<__enable_shared_from_this<_Tp2>, _Tp2>>::type
   _M_enable_shared_from_this_with(_Tp *__p) noexcept {
     if (auto __base = __enable_shared_from_this_base(_M_ref_count, __p))
       __base->_M_weak_assign(const_cast<_Tp2 *>(__p), _M_ref_count);
@@ -718,7 +736,7 @@ class __shared_ptr {
 
   template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
   typename std::enable_if<
-      !std::is_base_of_v<__enable_shared_from_this<_Tp>, _Tp>>::type
+      !std::is_base_of_v<__enable_shared_from_this<_Tp2>, _Tp2>>::type
   _M_enable_shared_from_this_with(_Tp *) noexcept {}
 
   /*Contained pointer. The raw instance pointer is stored here.*/
@@ -734,8 +752,9 @@ class __shared_ptr {
  */
 template <typename _Tp>
 class __weak_ptr {
+ public:
   /* Defines the type of the pointed-to object. */
-  using element_type = typename std::remove_extent<_Tp>;
+  using element_type = typename std::remove_extent<_Tp>::type;
 
   /**
    * Constructs a __weak_ptr that observes the object owned by a __shared_ptr.
@@ -832,6 +851,7 @@ class __weak_ptr {
       _M_ref_count = __ref_count;
     }
   }
+  friend class __shared_ptr<_Tp>;
   friend class enable_shared_from_this<_Tp>;
   friend class __enable_shared_from_this<_Tp>;
   element_type *_M_ptr;      /* Contained pointer.*/

@@ -191,6 +191,7 @@ inline void swap(shared_ptr<_Tp>& __a, shared_ptr<_Tp>& __b) {
 
 template <typename _Tp>
 class weak_ptr : public __weak_ptr<_Tp> {
+ public:
   constexpr weak_ptr() noexcept = default;
 
   weak_ptr(const shared_ptr<_Tp>& __r) noexcept : __weak_ptr<_Tp>(__r) {}
