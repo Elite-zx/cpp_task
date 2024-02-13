@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-// 假设你的shared_ptr和weak_ptr实现在"MyMemory.h"头文件中
+
 #include "shared_ptr.h"
 
 class TestClass {
@@ -27,14 +27,12 @@ void testSharedWeakPtr() {
     std::cout << "Use count after copy: " << shared1.use_count() << std::endl;
 
     // 创建weak_ptr
-    /* weak_ptr<TestClass> weak1 = shared1; */
-    /* std::cout << "Use count after weak_ptr creation: " << shared1.use_count()
-     */
-    /*           << std::endl; */
+    weak_ptr<TestClass> weak1 = shared1;
+    std::cout << "Use count after weak_ptr creation: " << shared1.use_count()
+              << std::endl;
 
     // 从weak_ptr提升为shared_ptr
-    /* auto shared3 = weak1.lock(); */
-    auto shared3 = shared2;
+    auto shared3 = weak1.lock();
     if (shared3) {
       std::cout << "Successfully locked weak_ptr, use count: "
                 << shared1.use_count() << std::endl;

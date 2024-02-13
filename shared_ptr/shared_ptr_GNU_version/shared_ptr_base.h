@@ -2,17 +2,31 @@
 #include <sys/types.h>
 
 #include <atomic>
+#include <cassert>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <exception>
 #include <functional>
 #include <stdexcept>
 #include <type_traits>
 
+class bad_weak_ptr : public std::exception {
+ public:
+  /* Implementations are allowed but not required to override what(). */
+  virtual char const *what() const noexcept override {
+    return "weak_ptr refers to an already deleted object";
+  };
+
+  virtual ~bad_weak_ptr() noexcept = default;
+};
+
+inline void __throw_bad_weak_ptr() { throw bad_weak_ptr(); }
 /**
  * Base class for managing the reference count mechanics for shared_ptr and
- * weak_ptr. This class provides a foundation for implementing custom control
- * blocks with atomic reference counting and support for custom deleters.
+ * weak_ptr. This class provides a foundation for implementing custom
+ * control blocks with atomic reference counting and support for custom
+ * deleters.
  */
 class _sp_counted_base {
  public:
@@ -79,13 +93,12 @@ class _sp_counted_base {
   bool _try_use_add_ref_nothrow() noexcept;
 
   /**
-   * Attempts to increment the use count atomically, throwing std::logic_error
+   * Attempts to increment the use count atomically, throwing bad_weak_ptr
    * if the use count is zero. This function is used internally to enforce
    * preconditions for certain operations.
    */
   void _try_use_add_ref() {
-    if (!_try_use_add_ref_nothrow())
-      throw std::logic_error("Cannot increment use_count as it is zero");
+    if (!_try_use_add_ref_nothrow()) __throw_bad_weak_ptr();
   }
 
   /**
@@ -314,6 +327,8 @@ class __shared_count {
     if (_M_pi != nullptr) _M_pi->_use_add_ref();
   }
 
+  explicit __shared_count(const __weak_count &__r);
+
   /**
    * Copy assignment operator.
    * Shares ownership of the managed object with another __shared_count
@@ -529,6 +544,12 @@ class __weak_count {
 };
 
 /* now weak_count is defined */
+inline __shared_count::__shared_count(const __weak_count &__r)
+    : _M_pi(__r._M_pi) {
+  if (_M_pi == nullptr || !_M_pi->_try_use_add_ref_nothrow())
+    __throw_bad_weak_ptr();
+}
+
 inline bool __shared_count::_M_less(const __weak_count &__rhs) const noexcept {
   return std::less<_sp_counted_base *>()(this->_M_pi, __rhs._M_pi);
 }
@@ -654,19 +675,13 @@ class __shared_ptr {
   }
 
   element_type &operator*() const noexcept {
-    if (get() != nullptr) {
-      return *get();
-    } else {
-      throw std::logic_error("shared_ptr is empty");
-    }
+    assert(get() != nullptr);
+    return *get();
   }
 
   element_type *operator->() const noexcept {
-    if (get() != nullptr) {
-      return get();
-    } else {
-      throw std::logic_error("shared_ptr is empty");
-    }
+    assert(get() != nullptr);
+    return get();
   }
 
   /**
@@ -681,11 +696,8 @@ class __shared_ptr {
    * @__p A pointer to the dynamically allocated object to manage.
    */
   void reset(_Tp *__p) {
-    if (__p != nullptr && __p != _M_ptr) {
-      shared_ptr(__p).swap(*this);
-    } else {
-      throw std::logic_error("ptr is illegal");
-    }
+    assert(__p == nullptr || __p != _M_ptr);
+    shared_ptr(__p).swap(*this);
   }
 
   /**
