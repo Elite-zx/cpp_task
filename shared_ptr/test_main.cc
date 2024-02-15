@@ -12,18 +12,18 @@ class TestClass : public enable_shared_from_this<TestClass> {
   ~TestClass() {
     std::cout << "TestClass destroyed with message: " << message << std::endl;
   }
-  void sayHello() const { std::cout << message << std::endl; }
-  void testSharedFromThis() {
+  void say_hello() const { std::cout << message << std::endl; }
+  void test_shared_from_this() {
     auto self = shared_from_this();
     std::cout << "Using shared_from_this: ";
-    self->sayHello();
+    self->say_hello();
   }
 
  private:
   std::string message;
 };
 
-void testSharedWeakPtr() {
+void test_shared_weak_ptr() {
   auto shared1 = make_shared<TestClass>("Hello, shared_ptr");
 
   {
@@ -31,7 +31,7 @@ void testSharedWeakPtr() {
     std::cout << "Use count after copy (2): " << shared1.use_count()
               << std::endl;
 
-    shared1->testSharedFromThis();
+    shared1->test_shared_from_this();
 
     weak_ptr<TestClass> weak1 = shared1;
     std::cout << "Use count after weak_ptr creation (2): "
@@ -40,7 +40,7 @@ void testSharedWeakPtr() {
     if (auto shared3 = weak1.lock()) {
       std::cout << "Successfully locked weak_ptr, use count (3): "
                 << shared1.use_count() << std::endl;
-      shared3->sayHello();
+      shared3->say_hello();
     } else {
       std::cerr << "Failed to lock weak_ptr, object might be destroyed."
                 << std::endl;
@@ -51,18 +51,20 @@ void testSharedWeakPtr() {
             << std::endl;
 
   // 模拟weak_ptr所指对象已被释放
-  weak_ptr<TestClass> expiredWeak = shared1;
+  weak_ptr<TestClass> expired_weak = shared1;
   shared1.reset();  // 显式释放shared1所指对象
 
-  auto sharedFromExpired = expiredWeak.lock();
-  if (!sharedFromExpired) {
+  auto shared_from_expired = expired_weak.lock();
+  if (!shared_from_expired) {
     std::cout << "expiredWeak is expired, lock() return a empty shared_ptr"
-
               << std::endl;
   }
+
+  TestClass tc("Throw bad_weak_ptr");
+  tc.test_shared_from_this();
 }
 
 int main() {
-  testSharedWeakPtr();
+  test_shared_weak_ptr();
   return 0;
 }
