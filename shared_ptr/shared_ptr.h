@@ -1,7 +1,4 @@
-#include <cstddef>
-#include <functional>
-#include <memory>
-#include <string_view>
+#include <new>
 
 #include "shared_ptr_base.h"
 
@@ -69,6 +66,10 @@ class shared_ptr : public __shared_ptr<_Tp> {
   }
 
  private:
+  /* used by weak_ptr::lock() */
+  shared_ptr(const weak_ptr<_Tp>& __r, std::nothrow_t) noexcept
+      : __shared_ptr<_Tp>(__r, std::nothrow) {}
+
   friend class weak_ptr<_Tp>;
 };
 
@@ -225,7 +226,9 @@ class weak_ptr : public __weak_ptr<_Tp> {
    * Locks this weak_ptr, returning a shared_ptr that owns the object.
    * If the object has already been deleted, the returned shared_ptr is empty.
    */
-  shared_ptr<_Tp> lock() const noexcept { return shared_ptr<_Tp>(*this); }
+  shared_ptr<_Tp> lock() const noexcept {
+    return shared_ptr<_Tp>(*this, std::nothrow);
+  }
 };
 
 /**
@@ -251,10 +254,10 @@ class enable_shared_from_this {
   ~enable_shared_from_this() {}
 
  public:
-  shared_ptr<_Tp> share_from_this() {
+  shared_ptr<_Tp> shared_from_this() {
     return shared_ptr<_Tp>(this->_M_weak_this);
   }
-  shared_ptr<const _Tp> share_from_this() const {
+  shared_ptr<const _Tp> shared_from_this() const {
     return shared_ptr<const _Tp>(this->_M_weak_this);
   }
 

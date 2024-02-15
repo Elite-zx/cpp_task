@@ -4,11 +4,8 @@
 #include <atomic>
 #include <cassert>
 #include <cstdint>
-#include <cstdio>
-#include <cstdlib>
 #include <exception>
 #include <functional>
-#include <stdexcept>
 #include <type_traits>
 
 class bad_weak_ptr : public std::exception {
@@ -328,6 +325,7 @@ class __shared_count {
   }
 
   explicit __shared_count(const __weak_count &__r);
+  explicit __shared_count(const __weak_count &__r, std::nothrow_t) noexcept;
 
   /**
    * Copy assignment operator.
@@ -543,11 +541,21 @@ class __weak_count {
   _sp_counted_base *_M_pi;
 };
 
-/* now weak_count is defined */
+/** now weak_count is defined **/
+/* This function will be called in this situation: the constructors of
+ * shared_ptr that take weak_ptr as the argument, when the
+ * weak_ptr refers to an already deleted object */
 inline __shared_count::__shared_count(const __weak_count &__r)
     : _M_pi(__r._M_pi) {
   if (_M_pi == nullptr || !_M_pi->_try_use_add_ref_nothrow())
     __throw_bad_weak_ptr();
+}
+
+/*  Used by __weak_ptr::lock() */
+inline __shared_count::__shared_count(const __weak_count &__r,
+                                      std::nothrow_t) noexcept
+    : _M_pi(__r._M_pi) {
+  if (_M_pi != nullptr && !_M_pi->_try_use_add_ref_nothrow()) _M_pi = nullptr;
 }
 
 inline bool __shared_count::_M_less(const __weak_count &__rhs) const noexcept {
@@ -568,10 +576,10 @@ class __enable_shared_from_this {
   ~__enable_shared_from_this() {}
 
  public:
-  __shared_ptr<_Tp> share_from_this() {
+  __shared_ptr<_Tp> shared_from_this() {
     return shared_ptr<_Tp>(this->_M_weak_this);
   }
-  __shared_ptr<const _Tp> share_from_this() const {
+  __shared_ptr<const _Tp> shared_from_this() const {
     return shared_ptr<const _Tp>(this->_M_weak_this);
   }
 
@@ -652,6 +660,13 @@ class __shared_ptr {
   explicit __shared_ptr(const __weak_ptr<_Tp> &__r) noexcept
       : _M_ref_count(__r._M_ref_count) {
     _M_ptr = __r._M_ptr;
+  }
+
+  /* This constructor is used by __weak_ptr::lock() and
+   * shared_ptr::shared_ptr(const weak_ptr&, std::nothrow_t).*/
+  explicit __shared_ptr(const __weak_ptr<_Tp> &__r, std::nothrow_t) noexcept
+      : _M_ref_count(__r._M_ref_count, std::nothrow) {
+    _M_ptr = _M_ref_count._get_use_count() ? __r._M_ptr : nullptr;
   }
 
   /**
@@ -740,7 +755,7 @@ class __shared_ptr {
    * __enable_shared_from_this<_Tp>, otherwise do nothing */
   template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
   typename std::enable_if<
-      std::is_base_of_v<__enable_shared_from_this<_Tp2>, _Tp2>>::type
+      std::is_base_of_v<enable_shared_from_this<_Tp2>, _Tp2>>::type
   _M_enable_shared_from_this_with(_Tp *__p) noexcept {
     if (auto __base = __enable_shared_from_this_base(_M_ref_count, __p))
       __base->_M_weak_assign(const_cast<_Tp2 *>(__p), _M_ref_count);
@@ -748,7 +763,7 @@ class __shared_ptr {
 
   template <typename _Tp2 = typename std::remove_cv<_Tp>::type>
   typename std::enable_if<
-      !std::is_base_of_v<__enable_shared_from_this<_Tp2>, _Tp2>>::type
+      !std::is_base_of_v<enable_shared_from_this<_Tp2>, _Tp2>>::type
   _M_enable_shared_from_this_with(_Tp *) noexcept {}
 
   /*Contained pointer. The raw instance pointer is stored here.*/
@@ -768,6 +783,7 @@ class __weak_ptr {
   /* Defines the type of the pointed-to object. */
   using element_type = typename std::remove_extent<_Tp>::type;
 
+  constexpr __weak_ptr() noexcept : _M_ptr(nullptr), _M_ref_count() {}
   /**
    * Constructs a __weak_ptr that observes the object owned by a __shared_ptr.
    * @__r: A __shared_ptr whose observed object will be shared.
@@ -828,7 +844,7 @@ class __weak_ptr {
    * Attempts to obtain a __shared_ptr that owns the observed object.
    */
   __shared_ptr<_Tp> lock() const noexcept {
-    return __shared_ptr<element_type>(*this);
+    return __shared_ptr<element_type>(*this, std::nothrow);
   }
 
   /**
