@@ -60,8 +60,12 @@ void test_shared_weak_ptr() {
               << std::endl;
   }
 
-  TestClass tc("Throw bad_weak_ptr");
-  tc.test_shared_from_this();
+  try {
+    TestClass tc("Throw bad_weak_ptr");
+    tc.test_shared_from_this();
+  } catch (const bad_weak_ptr& e) {
+    std::cout << "Exception caught: " << e.what() << std::endl;
+  }
 }
 
 int main() {

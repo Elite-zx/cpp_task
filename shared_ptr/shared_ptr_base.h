@@ -657,7 +657,7 @@ class __shared_ptr {
    * a shared pointer.
    * @__r A __weak_ptr to promote to a __shared_ptr.
    */
-  explicit __shared_ptr(const __weak_ptr<_Tp> &__r) noexcept
+  explicit __shared_ptr(const __weak_ptr<_Tp> &__r)
       : _M_ref_count(__r._M_ref_count) {
     _M_ptr = __r._M_ptr;
   }
