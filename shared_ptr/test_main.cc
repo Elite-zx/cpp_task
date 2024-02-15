@@ -19,8 +19,7 @@ class TestClass {
 
 void testSharedWeakPtr() {
   // 创建一个shared_ptr
-  shared_ptr<TestClass> shared1(new TestClass("Hello, shared_ptr"));
-
+  auto shared1 = make_shared<TestClass>("Hello, shared_ptr");
   {
     // 复制shared_ptr
     auto shared2 = shared1;

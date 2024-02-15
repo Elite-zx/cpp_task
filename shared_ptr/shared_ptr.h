@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <functional>
+#include <memory>
 #include <string_view>
 
 #include "shared_ptr_base.h"
@@ -67,8 +68,14 @@ class shared_ptr : public __shared_ptr<_Tp> {
     return *this;
   }
 
+ private:
   friend class weak_ptr<_Tp>;
 };
+
+template <typename _Tp, typename... _Args>
+inline shared_ptr<_Tp> make_shared(_Args... __args) {
+  return shared_ptr<_Tp>(new _Tp(std::forward<_Args>(__args)...));
+}
 
 template <typename _Tp>
 inline bool operator==(const shared_ptr<_Tp>& __a,
