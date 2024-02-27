@@ -37,6 +37,7 @@ int main(int argc, char **argv) {
 
   func Base_vfunc2 = reinterpret_cast<func>(vt1[1]);
   func Derived_vfunc2 = reinterpret_cast<func>(vt2[1]);
+  std::cout << "the size of vt item: " << sizeof(vt1[0]) << std::endl;
   Base_vfunc2();
   Derived_vfunc2();
   return 0;
