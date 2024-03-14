@@ -5,13 +5,11 @@ class Singleton {
   Singleton(Singleton&&) = delete;
   Singleton& operator=(Singleton&&) = delete;
 
-  static Singleton& get_instance() {
-    static Singleton instance;
-    return instance;
-  }
+  static Singleton& get_instance() { return instance; }
 
  private:
   Singleton() = default;
+  static Singleton instance;
 };
 
-Singleton& instance = Singleton::get_instance();
+Singleton Singleton::instance;

@@ -1,8 +1,8 @@
 #include <atomic>
 
-class SpinLock {
+class Spin_Lock {
  public:
-  SpinLock() = default;
+  Spin_Lock() = default;
 
   void lock() {
     while (af.test_and_set())
@@ -13,4 +13,4 @@ class SpinLock {
 
  private:
   std::atomic_flag af;
-};
+}
